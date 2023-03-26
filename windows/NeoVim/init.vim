@@ -1,4 +1,4 @@
-:set number
+ :set number
 :set relativenumber
 :set autoindent
 :set tabstop=2
@@ -21,18 +21,22 @@ Plug 'https://github.com/ryanoasis/vim-devicons' " Developer Icons
 Plug 'https://github.com/tc50cal/vim-terminal' " Vim Terminal
 Plug 'https://github.com/preservim/tagbar' " Tagbar for code navigation
 Plug 'https://github.com/terryma/vim-multiple-cursors' " CTRL + N for multiple cursors
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim' " command-line fuzzy finder, need to install fzf on your system https://github.com/junegunn/fzf
 
 set encoding=UTF-8
 
 call plug#end()
 
 " other plugins
+" fzf @ https://github.com/junegunn/fzf.vim 
 " auto-pairs @ https://github.com/jiangmiao/auto-pairs " Pair brackets automatically
 
 nnoremap <C-f> :NERDTreeFocus<CR>
 nnoremap <C-n> :NERDTree<CR>
 nnoremap <C-t> :NERDTreeToggle<CR>
 nnoremap <C-l> :call CocActionAsync('jumpDefinition')<CR>
+noremap <C-p> :Files<CR>
 
 nmap <F8> :TagbarToggle<CR>
 
