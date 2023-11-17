@@ -1,10 +1,12 @@
 :set number
 :set relativenumber
-:set autoindent
+filetype plugin indent on
 :set tabstop=4
-:set shiftwidth=2
+:set shiftwidth=4
+:set expandtab
 :set smarttab
-:set softtabstop=4
+:set autoindent
+:set smartindent
 :set mouse=a
 
 " plugins ---------------------- {{{
@@ -19,13 +21,48 @@ Plug 'morhetz/gruvbox' "Gruvbox color scheme
 Plug 'https://github.com/lifepillar/pgsql.vim' " PSQL Pluging needs :SQLSetType pgsql.vim
 Plug 'https://github.com/ap/vim-css-color' " CSS Color Preview
 Plug 'https://github.com/rafi/awesome-vim-colorschemes' " Retro Scheme
+" emmet configurations -------------------- {{{
+Plug 'mattn/emmet-vim'
+let g:user_emmet_leader_key='<A-z>'
+let g:user_emmet_install_global = 0
+augroup EmmetFileType
+    autocmd!
+    autocmd FileType html,css,javascriptreact,typescriptreact EmmetInstall
+augroup END
+" }}}
 Plug 'https://github.com/neoclide/coc.nvim', {'branch': 'release'}  " Auto Completion
+" COC configurations ------------------------- {{{
+let g:coc_data_home = 'C:/Users/qzhang/AppData/Local/coc'
+let g:coc_global_extensions = [
+  \ 'coc-tsserver',
+  \ 'coc-json',
+  \ 'coc-html',
+  \ 'coc-html-css-support',
+  \ 'coc-omnisharp',
+  \ 'coc-prettier',
+  \ 'coc-prisma',
+  \ 'coc-lua',
+  \ 'coc-pyright'
+  \ ]
+" }}}
 " Plug 'https://github.com/ryanoasis/vim-devicons' " Developer Icons
 Plug 'https://github.com/tc50cal/vim-terminal' " Vim Terminal
 Plug 'https://github.com/preservim/tagbar' " Tagbar for code navigation
-Plug 'https://github.com/terryma/vim-multiple-cursors' " CTRL + N for multiple cursors
+" Multi Cursor configurations --------------- {{{
+Plug 'mg979/vim-visual-multi', {'branch': 'master'}
+let g:VM_maps = {}
+let g:VM_maps['Find Under']         = '<C-d>'
+let g:VM_maps['Find Subword Under'] = '<C-d>'
+let g:VM_mouse_mappings             = 1
+nmap <A-LeftMouse>                  <Plug>(VM-Mouse-Cursor)
+" }}}
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim' " command-line fuzzy finder, need to install fzf on your system https://github.com/junegunn/fzf
+let $FZF_DEFAULT_COMMAND='rg --files -g !.git/F12 '
+Plug 'https://github.com/pangloss/vim-javascript' " javascript syntax
+Plug 'https://github.com/leafgarland/typescript-vim' "typescript syntax
+Plug 'MaxMEllon/vim-jsx-pretty'
+Plug 'cohama/lexima.vim'
 
 call plug#end()
 
@@ -34,14 +71,14 @@ call plug#end()
 colorscheme gruvbox
 set encoding=UTF-8
 
-let g:coc_data_home = 'C:/Users/qzhang/AppData/Local/coc'
 
 " other plugins
-" fzf @ https://github.com/junegunn/fzf.vim 
+" fzf @ https://github.com/junegunn/fzf.vim
 " auto-pairs @ https://github.com/jiangmiao/auto-pairs " Pair brackets automatically, .vim file should be put under ~/AppData/Local/nvim/plugin
 
-nnoremap <C-t> :NERDTreeToggle<CR>
-nnoremap <C-l> :call CocActionAsync('jumpDefinition')<CR>
+nnoremap <C-t>                   :NERDTreeToggle<CR>
+nnoremap <silent> <F12>          <Plug>(coc-definition)
+nnoremap <silent> <leader>r      <Plug>(coc-references)
 noremap <C-p> :Files<CR>
 
 nmap <F8> :TagbarToggle<CR>
@@ -61,11 +98,11 @@ let g:NERDTreeDirArrowCollapsible="~"
 
 " Airline configurations ----------------- {{{
 " air-line
-let g:airline_powerline_fonts = 1 
+let g:airline_powerline_fonts = 1
 let g:airline_theme='jellybeans'
-" let g:airline_section_b = '%{getcwd()}' " in section B of the status line display the CWD                            
-" TABLINE:                                                                                                           
-let g:airline#extensions#tabline#enabled = 1           " enable airline tabline                                     
+" let g:airline_section_b = '%{getcwd()}' " in section B of the status line display the CWD
+" TABLINE:
+let g:airline#extensions#tabline#enabled = 1           " enable airline tabline
 let g:airline#extensions#tabline#formatter = 'jsformatter' " path-to/f
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = '|'
@@ -92,28 +129,39 @@ let mapleader = "-"
 noremap	 <S-j>		  <Nop>
 noremap	 <S-k>		  <Nop>
 
-imap	 <C-j>		  <ESC><C-e>
-imap	 <C-k>		  <ESC><C-k>
+imap	 <C-j>		  <Down>
+imap	 <C-k>		  <Up>
+imap	 <C-h>		  <left>
+imap	 <C-l>		  <right>
 inoremap <expr> <Tab> pumvisible() ? coc#_select_confirm() : "<Tab>"
-inoremap jk			  <ESC>
-inoremap <C-_>		  <ESC>:execute "normal gcc"<cr> 
-inoremap <C-f>		  <ESC>/
+inoremap jk           <ESC>
+inoremap <C-_>		  <ESC>:execute "normal gcc"<cr>
+inoremap <C-f>		  <ESC>/\c
+inoremap <C-s>        <ESC>:w<cr>
+inoremap <C-z>        <ESC>u<cr>
+inoremap <A-f>        <ESC>:CocCommand prettier.formatFile<cr>
 
+nmap	 <leader>	  <Nop>
 nmap	 <C-j>		  <ESC><C-e>
 nmap	 <C-k>		  <ESC><C-y>
-nnoremap <C-f>		  /
+nnoremap <C-f>		  /\c
 nnoremap <C-_>        <ESC>:execute "normal gcc"<cr>
 nnoremap <C-q>		  :bdelete<cr>
+nnoremap <leader>n		  :nohl<cr>
+nnoremap <C-s>        :w<cr>
+nnoremap <C-b>        :Buffer<cr>
+nnoremap <C-z>        :u<cr>
+nnoremap <A-t>		  :NERDTreeFind<cr>
+nnoremap <A-f>        :CocCommand prettier.formatFile<cr>
 nnoremap <leader>ev	  :edit $MYVIMRC<cr>
 nnoremap <leader>vev  :vsplit $MYVIMRC<cr>
 nnoremap <leader>hev  :split $MYVIMRC<cr>
 nnoremap <leader>sv	  :source $MYVIMRC<cr>
-nnoremap <leader>nh	  :nohl<cr>
 nnoremap <leader>-	  :bprevious<cr>
 nnoremap <leader>=	  :bnext<cr>
 
 " In order to use the commentary plugin, this mapping is not nore
-vmap	 <C-_>		  gc  
+vmap	 <C-_>		  gc
 vnoremap <leader>"	          <ESC>`>a"<ESC>`<i"<ESC>
 vnoremap <leader>'	          <ESC>`>a'<ESC>`<i'<ESC>
 vnoremap <leader>(	          <ESC>`>a)<ESC>`<i(<ESC>
@@ -121,7 +169,7 @@ vnoremap <leader>{	          <ESC>`>a}<ESC>`<i{<ESC>
 vnoremap <leader>[	          <ESC>`>a]<ESC>`<i[<ESC>
 vnoremap <leader><	          <ESC>`>a><ESC>`<i<<ESC>
 vnoremap '			  <Nop>
-vnoremap (			  <Nop>	
+vnoremap (			  <Nop>
 
 tnoremap <A-q>  	  <C-\><C-N>
 tnoremap <C-F>		  <C-c>ack "" ./
@@ -145,4 +193,30 @@ augroup filetype_cpp
   autocmd filetype cpp setlocal foldlevelstart=1
   autocmd filetype cpp setlocal foldmethod=syntax
 augroup end
-" }}} 
+" }}}
+
+
+" Autocmds ----------------------- {{{
+augroup RemoveTrailingSpaces
+    autocmd!
+    autocmd BufWritePre * :%s/\s\+$//e
+augroup END
+
+augroup JSBufferHighlightingSync
+    autocmd!
+	autocmd BufEnter *.{js,jsx,ts,tsx} :syntax sync fromstart
+	autocmd BufLeave *.{js,jsx,ts,tsx} :syntax sync clear
+augroup END
+" }}}
+
+augroup WebdevIndent
+    autocmd!
+    autocmd BufEnter *.{js,jsx,ts,tsx,html,css,json} :setlocal tabstop=2 shiftwidth=2
+augroup END
+
+" Test Coc insert
+" use <tab> to trigger completion and navigate to the next complete item
+function! CheckBackspace() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
