@@ -56,9 +56,11 @@ let g:VM_maps['Find Subword Under'] = '<C-d>'
 let g:VM_mouse_mappings             = 1
 nmap <A-LeftMouse>                  <Plug>(VM-Mouse-Cursor)
 " }}}
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim' " command-line fuzzy finder, need to install fzf on your system https://github.com/junegunn/fzf
-let $FZF_DEFAULT_COMMAND='rg --files -g !.git/F12 '
+
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.4' }
+" or                                , { 'branch': '0.1.x' }
+let $FZF_DEFAULT_COMMAND='rg --files -g !.git/ -g !build/'
 Plug 'https://github.com/pangloss/vim-javascript' " javascript syntax
 Plug 'https://github.com/leafgarland/typescript-vim' "typescript syntax
 Plug 'MaxMEllon/vim-jsx-pretty'
@@ -70,11 +72,6 @@ call plug#end()
 
 colorscheme gruvbox
 set encoding=UTF-8
-
-
-" other plugins
-" fzf @ https://github.com/junegunn/fzf.vim
-" auto-pairs @ https://github.com/jiangmiao/auto-pairs " Pair brackets automatically, .vim file should be put under ~/AppData/Local/nvim/plugin
 
 nnoremap <C-t>                   :NERDTreeToggle<CR>
 nnoremap <silent> <F12>          <Plug>(coc-definition)
@@ -133,6 +130,8 @@ imap	 <C-j>		  <Down>
 imap	 <C-k>		  <Up>
 imap	 <C-h>		  <left>
 imap	 <C-l>		  <right>
+imap     <A-h>        <C-left>
+imap     <A-l>        <C-right>
 inoremap <expr> <Tab> pumvisible() ? coc#_select_confirm() : "<Tab>"
 inoremap jk           <ESC>
 inoremap <C-_>		  <ESC>:execute "normal gcc"<cr>
@@ -147,9 +146,10 @@ nmap	 <C-k>		  <ESC><C-y>
 nnoremap <C-f>		  /\c
 nnoremap <C-_>        <ESC>:execute "normal gcc"<cr>
 nnoremap <C-q>		  :bdelete<cr>
-nnoremap <leader>n		  :nohl<cr>
+nnoremap <C-p>        <ESC>:Telescope find_files find_command=rg,--hidden,--files,--glob,!**/.git/*,--glob,!**/build/* <cr>
+nnoremap <C-b>        <ESC>:Telescope buffers<cr>
+nnoremap <leader>n	  :nohl<cr>
 nnoremap <C-s>        :w<cr>
-nnoremap <C-b>        :Buffer<cr>
 nnoremap <C-z>        :u<cr>
 nnoremap <A-t>		  :NERDTreeFind<cr>
 nnoremap <A-f>        :CocCommand prettier.formatFile<cr>
@@ -159,6 +159,7 @@ nnoremap <leader>hev  :split $MYVIMRC<cr>
 nnoremap <leader>sv	  :source $MYVIMRC<cr>
 nnoremap <leader>-	  :bprevious<cr>
 nnoremap <leader>=	  :bnext<cr>
+nnoremap <leader>gp :Telescope live_grep<cr>
 
 " In order to use the commentary plugin, this mapping is not nore
 vmap	 <C-_>		  gc
@@ -173,7 +174,6 @@ vnoremap (			  <Nop>
 
 tnoremap <A-q>  	  <C-\><C-N>
 tnoremap <C-F>		  <C-c>ack "" ./
-
 
 inoreabbrev adn and
 inoreabbrev waht what
@@ -190,7 +190,7 @@ augroup END
 " c++ file settings --------------------------- {{{
 augroup filetype_cpp
   autocmd!
-  autocmd filetype cpp setlocal foldlevelstart=1
+  autocmd filetype cpp setlocal foldlevelstart=99
   autocmd filetype cpp setlocal foldmethod=syntax
 augroup end
 " }}}
